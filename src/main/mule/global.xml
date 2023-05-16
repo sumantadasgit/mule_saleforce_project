@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="27cc54c8-1d5b-444a-9c74-ce037be0bf5b" >
+		<salesforce:jwt-connection consumerKey="3MVG9wt4IL4O5wvIYbVu15PtKUs1AI1BapOGP21hDykXVXwJ_j7EwdtFgZpYbh8sCr_uZya3F93ibqGr53xQj" principal="sumanta.das.code@gmail.com" keyStore="C:\Users\suman\OneDrive\Desktop\00D5i00000CvpfC.jks" storePassword="changeit"/>
+</salesforce:sfdc-config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="0c0a5a56-e534-47c5-a7f5-4213b3169d92" basePath="/timezone">
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="3476c06b-4a81-474b-aff2-06c88bc0fe45" basePath="/api/timezone">
+		<http:request-connection host="worldtimeapi.org" />
+	</http:request-config>
+
+</mule>
