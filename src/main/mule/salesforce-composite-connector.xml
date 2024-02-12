@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce-composite="http://www.mulesoft.org/schema/mule/salesforce-composite" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/salesforce-composite http://www.mulesoft.org/schema/mule/salesforce-composite/current/mule-salesforce-composite.xsd">
+	<flow name="mule_saleforce_projectFlow" doc:id="81a0e324-dade-4c79-874f-6dc87fec61e0" >
+		<http:listener doc:name="Listener" doc:id="e6a10c6c-677b-4075-a1a5-e1cb3724a54a" config-ref="HTTP_Listener_config" path="/query"/>
+		<salesforce-composite:execute-composite-request doc:name="Execute composite request" doc:id="5ff18296-b424-4638-83b7-728ea96a05f4" config-ref="Salesforce_Composite_Config"/>
+	</flow>
+</mule>

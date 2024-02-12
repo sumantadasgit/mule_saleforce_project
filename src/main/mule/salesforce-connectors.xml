@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<flow name="salesforce-connectorsFlow" doc:id="ba5eaf25-6740-4f08-9096-f555082a91a4" >
+		<http:listener doc:name="Listener" doc:id="8235dbea-3c28-4d0a-a626-94eb52237f64" config-ref="HTTP_Listener_config" path="/create"/>
+		<ee:transform doc:name="Transform Message" doc:id="ee031fde-edef-4365-a7d2-fd676475ee5f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:create doc:name="Create" doc:id="f10348a1-1ab4-4ee9-96df-5233069ec4a6" config-ref="Salesforce_Config" type="Account"/>
+		<ee:transform doc:name="Transform Message" doc:id="5aa99457-e164-45e9-b22b-0a080d5b9985" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="salesforce-connectorsFlow1" doc:id="b8cbc65a-8cfe-454b-927d-8581cadfde2a" >
+		<salesforce:modified-object-listener doc:name="On Modified Object" doc:id="8b98cce2-f6f0-4546-acfd-bc0f9c738552" config-ref="Salesforce_Config" objectType="Lead">
+			<scheduling-strategy >
+				<fixed-frequency frequency="10" timeUnit="SECONDS" />
+			</scheduling-strategy>
+		</salesforce:modified-object-listener>
+		<ee:transform doc:name="Transform Message" doc:id="f7185965-70fc-4751-af7c-64d7f3b9fc94" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="1154ab42-128a-44e0-8866-a8003d428d42" >
+			<route >
+				<db:insert doc:name="Insert" doc:id="32f8def4-9572-440d-beb1-0c0c475cd07d" config-ref="Database_Config">
+			<db:sql><![CDATA[INSERT INTO mulesoft.salesforce_lead (Company,Name,Status) VALUES (:company,:name,:status);]]></db:sql>
+			<db:input-parameters><![CDATA[#[{'company':payload.Company, 'name':payload.Name, 'status':payload.Status}]]]></db:input-parameters>
+		</db:insert>
+			</route>
+			<route >
+				<file:write doc:name="Write" doc:id="540300bf-d34d-437b-8086-509eb30470d3" path="C:\Users\suman\AnypointStudio\studio-workspace\mule_salesforce_project\target_dir\sf_leads.csv">
+					<file:content ><![CDATA[#[output application/csv --- [payload]]]]></file:content>
+				</file:write>
+			</route>
+		</scatter-gather>
+		<logger level="INFO" doc:name="Logger" doc:id="f99cb838-8b0d-4d6f-bc05-fa35f1884ec1" message="#[payload]"/>
+	</flow>
+</mule>
