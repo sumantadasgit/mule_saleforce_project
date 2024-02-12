@@ -44,13 +44,13 @@ payload]]></ee:set-payload>
 		</ee:transform>
 		<scatter-gather doc:name="Scatter-Gather" doc:id="1154ab42-128a-44e0-8866-a8003d428d42" >
 			<route >
-				<db:insert doc:name="Insert" doc:id="32f8def4-9572-440d-beb1-0c0c475cd07d" config-ref="Database_Config">
+				<db:insert doc:name="Insert Leads to Database Table" doc:id="32f8def4-9572-440d-beb1-0c0c475cd07d" config-ref="Database_Config">
 			<db:sql><![CDATA[INSERT INTO mulesoft.salesforce_lead (Company,Name,Status) VALUES (:company,:name,:status);]]></db:sql>
 			<db:input-parameters><![CDATA[#[{'company':payload.Company, 'name':payload.Name, 'status':payload.Status}]]]></db:input-parameters>
 		</db:insert>
 			</route>
 			<route >
-				<file:write doc:name="Write" doc:id="540300bf-d34d-437b-8086-509eb30470d3" path="C:\Users\suman\AnypointStudio\studio-workspace\mule_salesforce_project\target_dir\sf_leads.csv">
+				<file:write doc:name="Write Leads to a CSV" doc:id="540300bf-d34d-437b-8086-509eb30470d3" path="C:\Users\suman\AnypointStudio\studio-workspace\mule_salesforce_project\target_dir\sf_leads.csv" mode="APPEND">
 					<file:content ><![CDATA[#[output application/csv --- [payload]]]]></file:content>
 				</file:write>
 			</route>
